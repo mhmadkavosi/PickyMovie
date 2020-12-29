@@ -1,0 +1,11 @@
+{
+  "name": "pickymovie",
+  "version": "1.0.0",
+  "description": "Scrap the movies and serials",
+  "main": "app.js",
+  "author": "Mohammad Kavosi",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer-core": "^5.5.0"
+  }
+}
