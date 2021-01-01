@@ -15,6 +15,9 @@ const MOVIE_ID = `tt7137846`;
   const data = await page.evaluate(() => {
     const title = document.querySelector('div[class="title_wrapper"] > h1')
       .innerText;
+    const timeWatch = document
+      .querySelector('div[class="subtext"] > time')
+      .innerText.trim();
   });
 
     return {
