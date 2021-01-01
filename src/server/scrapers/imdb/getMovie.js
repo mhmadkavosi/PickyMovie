@@ -18,6 +18,8 @@ const MOVIE_ID = `tt7137846`;
     const timeWatch = document
       .querySelector('div[class="subtext"] > time')
       .innerText.trim();
+    const rating = document.querySelector('span[itemprop="ratingValue"]')
+      .innerText;
   });
 
     return {
