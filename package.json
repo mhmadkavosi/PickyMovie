@@ -9,7 +9,7 @@
     "node": "^15"
   },
   "dependencies": {
-    "puppeteer-core": "^5.5.0"
+    "puppeteer": "^5.5.0"
   },
   "devDependencies": {
     "eslint": "^7.16.0",
