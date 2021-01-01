@@ -20,6 +20,9 @@ const MOVIE_ID = `tt7137846`;
       .innerText.trim();
     const rating = document.querySelector('span[itemprop="ratingValue"]')
       .innerText;
+    const ratingCount = document.querySelector('span[itemprop="ratingCount"]')
+      .innerText;
+
   });
 
     return {
