@@ -27,18 +27,47 @@ const MOVIE_ID = `tt7137846`;
     const genras = document.querySelectorAll('.subtext > a');
     [...genras].forEach((el) => {
       genra.push(el.innerText);
-  });
+    });
     const releaseDate = [...genra].pop();
     genra = genra.slice(0, genra.length - 1);
+    const shortStory = document
+      .querySelector(
+        '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div.summary_text.ready > div > div.plot-text'
+      )
+      .innerText.trim();
+    const director = document.querySelector(
+      '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(2) > a'
+    ).innerText;
+
+    let writers = [];
+    const writer = document.querySelectorAll(
+      '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(3) > a'
+    );
+    [...writer].forEach((el) => {
+      writers.push(el.innerText);
+    });
+
+    let stars = [];
+    const star = document.querySelectorAll(
+      '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(4) > a'
+    );
+    [...star].forEach((el) => {
+      stars.push(el.innerText);
+    });
+    stars = stars.slice(0, stars.length - 1);
 
     /* Returning an object filled with the scraped data */
     return {
       title,
       genra,
+      director,
+      writers,
+      stars,
       rating,
       ratingCount,
       timeWatch,
       releaseDate,
+      shortStory,
     };
   });
 
