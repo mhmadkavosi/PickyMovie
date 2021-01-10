@@ -35,11 +35,17 @@ const movieName = 'fight club';
       const imageMovie = el.getAttribute('src');
       image.push(imageMovie);
     });
-
+    const moviesInformation = [];
+    for (let i = 0; i < movies.length; i++) {
+      const movieInformation = {
+        movieName: movies[i],
+        imdbId: imdbID[i],
+        image: image[i],
+      };
+      moviesInformation.push(movieInformation);
+    }
     return {
-      movies,
-      imdbID,
-      image,
+      moviesInformation,
     };
   });
 
