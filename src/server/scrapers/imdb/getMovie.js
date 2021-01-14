@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 
 const IMDB_URL = (movie_id) => `https://www.imdb.com/title/${movie_id}/`;
-const MOVIE_ID = `tt7137846`;
+const MOVIE_ID = `tt2527338`;
 
 (async () => {
   const browser = await puppeteer.launch();
@@ -53,9 +53,24 @@ const MOVIE_ID = `tt7137846`;
     });
     stars = stars.slice(0, stars.length - 1);
 
+    const poster = document
+      .querySelector(
+        '#title-overview-widget > div.vital > div.slate_wrapper > div.poster > a > img'
+      )
+      .getAttribute('src');
+    const baseURL = 'https://www.imdb.com';
+    const trailer =
+      baseURL +
+      document
+        .querySelector(
+          '#title-overview-widget > div.vital > div.slate_wrapper > div.slate > a'
+        )
+        .getAttribute('href');
+
     return {
       title,
       genra,
+      poster,
       director,
       writers,
       stars,
@@ -64,6 +79,7 @@ const MOVIE_ID = `tt7137846`;
       timeWatch,
       releaseDate,
       shortStory,
+      trailer,
     };
   });
 
