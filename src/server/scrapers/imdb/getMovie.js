@@ -7,7 +7,7 @@ const MOVIE_ID = `tt2527338`;
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.goto(IMDB_URL(MOVIE_ID), { waitUntil: 'networkidle0' });
+  await page.goto(IMDB_URL(MOVIE_ID), { waitUntil: 'domcontentloaded' });
 
   const data = await page.evaluate(() => {
     const title = document.querySelector('div[class="title_wrapper"] > h1')
@@ -36,7 +36,7 @@ const MOVIE_ID = `tt2527338`;
       '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(2) > a'
     ).innerText;
 
-    const writers = [];
+    let writers = [];
     const writer = document.querySelectorAll(
       '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(3) > a'
     );
@@ -52,6 +52,7 @@ const MOVIE_ID = `tt2527338`;
       stars.push(el.innerText);
     });
     stars = stars.slice(0, stars.length - 1);
+    writers = writers.slice(0, stars.length - 1);
 
     const poster = document
       .querySelector(
