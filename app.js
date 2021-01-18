@@ -14,3 +14,20 @@ app.listen(port, () => {
 app.use(morgan('dev'));
 app.use(express.json());
 
+app.get('/:movieName', (req, res) => {
+  const movies = new Promise((resolve, reject) => {
+    scrapers
+      .scrapMovies(req.params.movieName)
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((err) => console.log(err));
+  });
+
+  Promise.all([movies])
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => console.log(err));
+});
+
