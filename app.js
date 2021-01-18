@@ -31,3 +31,19 @@ app.get('/:movieName', (req, res) => {
     .catch((err) => console.log(err));
 });
 
+app.get('/movie/:imdbId', (req, res) => {
+  const movie = new Promise((resolve, reject) => {
+    scrapers
+      .scrapMovie(req.params.imdbId)
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((err) => console.log(err));
+  });
+
+  Promise.all([movie])
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => console.log(err));
+});
