@@ -1,12 +1,11 @@
 const puppeteer = require('puppeteer');
 
-const scrapMovie = async () => {
-  const IMDB_URL = (movie_id) => `https://www.imdb.com/title/${movie_id}/`;
-  const MOVIE_ID = `tt2527338`;
+const scrapMovie = async (movieId) => {
+  const imdbUrl = `https://www.imdb.com/title/${movieId}/`;
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.goto(IMDB_URL(MOVIE_ID), { waitUntil: 'domcontentloaded' });
+  await page.goto(imdbUrl, { waitUntil: 'domcontentloaded' });
 
   const scrapedData = await page.evaluate(() => {
     const title = document.querySelector('div[class="title_wrapper"] > h1')
@@ -85,11 +84,11 @@ const scrapMovie = async () => {
   return scrapedData;
 };
 
-const scrapMovies = async () => {
+const scrapMovies = async (movieName) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-
-  await page.goto(url(movieName), { waitUntil: 'networkidle0' });
+  const url = `https://www.imdb.com/find?&s=tt&ttype=ft&q=${movieName}`;
+  await page.goto(url, { waitUntil: 'networkidle0' });
 
   const scrapedData = await page.evaluate(() => {
     const movies = [];
@@ -124,9 +123,7 @@ const scrapMovies = async () => {
       };
       moviesInformation.push(movieInformation);
     }
-    return {
-      moviesInformation,
-    };
+    return moviesInformation;
   });
 
   await browser.close();
