@@ -1,15 +1,14 @@
 const puppeteer = require('puppeteer');
 
-const IMDB_URL = (movie_id) => `https://www.imdb.com/title/${movie_id}/`;
-const MOVIE_ID = `tt2527338`;
-
-(async () => {
+const scrapMovie = async () => {
+  const IMDB_URL = (movie_id) => `https://www.imdb.com/title/${movie_id}/`;
+  const MOVIE_ID = `tt2527338`;
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
   await page.goto(IMDB_URL(MOVIE_ID), { waitUntil: 'domcontentloaded' });
 
-  const data = await page.evaluate(() => {
+  const scrapedData = await page.evaluate(() => {
     const title = document.querySelector('div[class="title_wrapper"] > h1')
       .innerText;
     const timeWatch = document
@@ -59,14 +58,12 @@ const MOVIE_ID = `tt2527338`;
         '#title-overview-widget > div.vital > div.slate_wrapper > div.poster > a > img'
       )
       .getAttribute('src');
-    const baseURL = 'https://www.imdb.com';
-    const trailer =
-      baseURL +
-      document
-        .querySelector(
-          '#title-overview-widget > div.vital > div.slate_wrapper > div.slate > a'
-        )
-        .getAttribute('href');
+
+    const trailer = document
+      .querySelector(
+        '#title-overview-widget > div.vital > div.slate_wrapper > div.slate > a'
+      )
+      .getAttribute('href');
 
     return {
       title,
@@ -80,11 +77,61 @@ const MOVIE_ID = `tt2527338`;
       timeWatch,
       releaseDate,
       shortStory,
-      trailer,
+      trailer: `https://www.imdb.com${trailer}`,
     };
   });
 
-  console.log(data);
+  await browser.close();
+  return scrapedData;
+};
+
+const scrapMovies = async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.goto(url(movieName), { waitUntil: 'networkidle0' });
+
+  const scrapedData = await page.evaluate(() => {
+    const movies = [];
+    const moviesName = document.querySelectorAll(
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.result_text > a'
+    );
+    [...moviesName].forEach((el) => {
+      movies.push(el.innerText);
+    });
+    const imdbID = [];
+    const imdbIDs = document.querySelectorAll(
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.result_text > a'
+    );
+    [...imdbIDs].forEach((el) => {
+      const movie = el.getAttribute('href').match(/title\/(.*)\//)[1];
+      imdbID.push(movie);
+    });
+    const image = [];
+    const images = document.querySelectorAll(
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.primary_photo > a > img'
+    );
+    [...images].forEach((el) => {
+      const imageMovie = el.getAttribute('src');
+      image.push(imageMovie);
+    });
+    const moviesInformation = [];
+    for (let i = 0; i < movies.length; i++) {
+      const movieInformation = {
+        movieName: movies[i],
+        imdbId: imdbID[i],
+        image: image[i],
+      };
+      moviesInformation.push(movieInformation);
+    }
+    return {
+      moviesInformation,
+    };
+  });
 
   await browser.close();
-})();
+  return scrapedData;
+};
+
+module.exports.scrapMovie = scrapMovie;
+module.exports.scrapMovies = scrapMovies;
