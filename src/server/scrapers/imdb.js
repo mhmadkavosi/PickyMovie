@@ -129,6 +129,40 @@ const scrapMovies = async (movieName) => {
   await browser.close();
   return scrapedData;
 };
+const top250Movie = async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const url = `https://www.imdb.com/chart/top`;
+
+  await page.goto(url, { waitUntil: 'networkidle0' });
+  const scrapeData = await page.evaluate(() => {
+    const titleAndRank = [];
+    const titleAndRanks = document.querySelectorAll('td.titleColumn');
+    [...titleAndRanks].forEach((el) => {
+      titleAndRank.push(el.innerText);
+    });
+
+    const rating = [];
+    const ratings = document.querySelectorAll('td.imdbRating > strong');
+    [...ratings].forEach((el) => {
+      rating.push(el.innerText);
+    });
+
+    const rankingMovieInfo = [];
+    for (let i = 0; i < rating.length; i++) {
+      const rankingMoviesInfo = {
+        titleAndRankMovie: titleAndRank[i],
+        ratingMovie: rating[i],
+      };
+      rankingMovieInfo.push(rankingMoviesInfo);
+    }
+    return rankingMovieInfo;
+  });
+
+  await browser.close();
+  return scrapeData;
+};
 
 module.exports.scrapMovie = scrapMovie;
 module.exports.scrapMovies = scrapMovies;
+module.exports.top250Movie = top250Movie;
