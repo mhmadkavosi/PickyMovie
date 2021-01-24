@@ -14,6 +14,8 @@ app.listen(port, () => {
 app.use(morgan('dev'));
 app.use(express.json());
 
+// TODO we don't send and save any image!!!
+
 app.get('/:movieName', async (req, res) => {
   // const movies = new Promise((resolve, reject) => {
   //   scrapers
@@ -66,6 +68,17 @@ app.get('/top250Movie', async (req, res) => {
     const movie = await scrapers.top250Movie();
 
     res.json(movie);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// TODO : send back 304 htpp status code not data
+app.get('/top250Tv', async (req, res) => {
+  try {
+    const tv = await scrapers.top250Tv();
+
+    res.json(tv);
   } catch (error) {
     console.log(error);
   }
