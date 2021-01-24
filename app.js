@@ -35,7 +35,7 @@ app.get('/:movieName', async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-  });
+});
 
 app.get('/movie/:imdbId', async (req, res) => {
   // const movie = new Promise((resolve, reject) => {
@@ -60,19 +60,13 @@ app.get('/movie/:imdbId', async (req, res) => {
   }
 });
 
-app.get('/movie/:imdbId', (req, res) => {
-  const movie = new Promise((resolve, reject) => {
-    scrapers
-      .scrapMovie(req.params.imdbId)
-      .then((data) => {
-        resolve(data);
-      })
-      .catch((err) => console.log(err));
-  });
+// TODO : send back 304 htpp status code not data
+app.get('/top250Movie', async (req, res) => {
+  try {
+    const movie = await scrapers.top250Movie();
 
-  Promise.all([movie])
-    .then((data) => {
-      res.json(data);
-    })
-    .catch((err) => console.log(err));
+    res.json(movie);
+  } catch (error) {
+    console.log(error);
+  }
 });
