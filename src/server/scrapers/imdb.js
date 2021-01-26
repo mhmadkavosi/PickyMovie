@@ -229,7 +229,39 @@ const trendingTv = async () => {
   await browser.close();
   return scrapedData;
 };
+const trendingMovie = async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const url = `https://www.imdb.com/chart/moviemeter`;
 
+  await page.goto(url, { waitUntil: 'networkidle0' });
+  const scrapedData = await page.evaluate(() => {
+    const titleAndRank = [];
+    const titleAndRanks = document.querySelectorAll('.titleColumn > a');
+    [...titleAndRanks].forEach((el) => {
+      titleAndRank.push(el.innerText);
+    });
+
+    const rating = [];
+    const ratings = document.querySelectorAll('td.imdbRating > strong');
+    [...ratings].forEach((el) => {
+      rating.push(el.innerText);
+    });
+
+    const trendingTvInfo = [];
+    for (let i = 0; i < rating.length; i++) {
+      const trendingTvsInfo = {
+        titleAndRankTv: titleAndRank[i],
+        ratingTv: rating[i],
+      };
+      trendingTvInfo.push(trendingTvsInfo);
+    }
+    return trendingTvInfo;
+  });
+  console.log(scrapedData);
+  await browser.close();
+  return scrapedData;
+};
 module.exports.scrapMovie = scrapMovie;
 module.exports.scrapMovies = scrapMovies;
 module.exports.top250Movie = top250Movie;
