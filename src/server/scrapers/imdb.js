@@ -30,10 +30,13 @@ const scrapMovie = async (movieId) => {
         '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div.summary_text.ready > div > div.plot-text'
       )
       .innerText.trim();
-    const director = document.querySelector(
+    const directors = [];
+    const director = document.querySelectorAll(
       '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(2) > a'
-    ).innerText;
-
+    );
+    [...director].forEach((el) => {
+      directors.push(el.innerText);
+    });
     let writers = [];
     const writer = document.querySelectorAll(
       '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(3) > a'
