@@ -71,7 +71,7 @@ const scrapMovie = async (movieId) => {
       title,
       genra,
       poster,
-      director,
+      directors,
       writers,
       stars,
       rating,
@@ -341,10 +341,108 @@ const scrapTvs = async (tvName) => {
   await browser.close();
   return scrapedData;
 };
+const scrapTv = async (tvId) => {
+  const imdbUrl = `https://www.imdb.com/title/${tvId}/`;
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  await page.goto(imdbUrl, { waitUntil: 'domcontentloaded' });
+
+  const scrapedData = await page.evaluate(() => {
+    const title = document.querySelector('div[class="title_wrapper"] > h1')
+      .innerText;
+    const timeWatch = document
+      .querySelector('div[class="subtext"] > time')
+      .innerText.trim();
+    const rating = document.querySelector('span[itemprop="ratingValue"]')
+      .innerText;
+    const ratingCount = document.querySelector('span[itemprop="ratingCount"]')
+      .innerText;
+
+    let genra = [];
+    const genras = document.querySelectorAll('.subtext > a');
+    [...genras].forEach((el) => {
+      genra.push(el.innerText);
+    });
+    const releaseDate = [...genra].pop();
+    genra = genra.slice(0, genra.length - 1);
+    const shortStory = document
+      .querySelector(
+        '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div.summary_text.ready > div > div.plot-text'
+      )
+      .innerText.trim();
+
+    const director = document.querySelectorAll(
+      '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(2) > a'
+    );
+    let directors = [];
+    [...director].forEach((el) => {
+      directors.push(el.innerText);
+    });
+
+    let stars = [];
+    const star = document.querySelectorAll(
+      '#title-overview-widget > div.plot_summary_wrapper.localized > div.plot_summary > div:nth-child(3) > a'
+    );
+    [...star].forEach((el) => {
+      stars.push(el.innerText);
+    });
+    stars = stars.slice(0, stars.length - 1);
+    const poster = document
+      .querySelector(
+        '#title-overview-widget > div.vital > div.slate_wrapper > div.poster > a > img'
+      )
+      .getAttribute('src');
+
+    const trailer = document
+      .querySelector(
+        '#title-overview-widget > div.vital > div.slate_wrapper > div.slate > a'
+      )
+      .getAttribute('href');
+
+    const seasons = [];
+    const season = document.querySelectorAll(
+      '#title-episode-widget > div > div:nth-child(4) > a'
+    );
+    [...season].forEach((el) => {
+      seasons.push(el.innerText);
+      seasons.sort();
+    });
+    const years = [];
+    const year = document.querySelectorAll(
+      '#title-episode-widget > div > div:nth-child(5) > a'
+    );
+    [...year].forEach((el) => {
+      years.push(el.innerText);
+      years.sort();
+    });
+    return {
+      title,
+      genra,
+      poster,
+      directors,
+      years,
+      seasons,
+      stars,
+      rating,
+      ratingCount,
+      timeWatch,
+      releaseDate,
+      shortStory,
+      trailer: `https://www.imdb.com${trailer}`,
+    };
+  });
+  console.log(scrapedData);
+  await browser.close();
+  return scrapedData;
+};
 module.exports.scrapMovie = scrapMovie;
 module.exports.scrapMovies = scrapMovies;
+module.exports.scrapTv = scrapTv;
+module.exports.scrapTvs = scrapTvs;
 module.exports.top250Movie = top250Movie;
 module.exports.top250Tv = top250Tv;
 module.exports.trendingTv = trendingTv;
 module.exports.trendingMovie = trendingMovie;
 module.exports.popularTv = popularTv;
+scrapTv('tt3032476');
