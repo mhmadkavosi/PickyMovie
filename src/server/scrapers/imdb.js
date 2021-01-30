@@ -86,13 +86,13 @@ const scrapMovie = async (movieId) => {
 const scrapMovies = async (movieName) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
-  const url = `https://www.imdb.com/find?&s=tt&ttype=ft&q=${movieName}`;
+  const url = `https://www.imdb.com/find?&s=tt&ttype=ftq=${movieName}`;
   await page.goto(url, { waitUntil: 'networkidle0' });
 
   const scrapedData = await page.evaluate(() => {
     const movies = [];
     const moviesName = document.querySelectorAll(
-      '#main > div > div.findSection > table > tbody > tr.findResult > td.result_text > a'
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.result_text'
     );
     [...moviesName].forEach((el) => {
       movies.push(el.innerText);
