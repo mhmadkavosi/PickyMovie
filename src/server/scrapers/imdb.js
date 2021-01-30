@@ -293,6 +293,51 @@ const popularTv = async () => {
   return scrapedData;
 };
 
+const scrapTvs = async (tvName) => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const url = `https://www.imdb.com/find?&s=tt&ttype=tv&q=${tvName}`;
+  await page.goto(url, { waitUntil: 'networkidle0' });
+
+  const scrapedData = await page.evaluate(() => {
+    const movies = [];
+    const moviesName = document.querySelectorAll(
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.result_text'
+    );
+    [...moviesName].forEach((el) => {
+      movies.push(el.innerText);
+    });
+    const imdbID = [];
+    const imdbIDs = document.querySelectorAll(
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.result_text > a'
+    );
+    [...imdbIDs].forEach((el) => {
+      const movie = el.getAttribute('href').match(/title\/(.*)\//)[1];
+      imdbID.push(movie);
+    });
+    const image = [];
+    const images = document.querySelectorAll(
+      '#main > div > div.findSection > table > tbody > tr.findResult > td.primary_photo > a > img'
+    );
+    [...images].forEach((el) => {
+      const imageMovie = el.getAttribute('src');
+      image.push(imageMovie);
+    });
+    const moviesInformation = [];
+    for (let i = 0; i < movies.length; i++) {
+      const movieInformation = {
+        movieName: movies[i],
+        imdbId: imdbID[i],
+        image: image[i],
+      };
+      moviesInformation.push(movieInformation);
+    }
+    return moviesInformation;
+  });
+
+  await browser.close();
+  return scrapedData;
+};
 module.exports.scrapMovie = scrapMovie;
 module.exports.scrapMovies = scrapMovies;
 module.exports.top250Movie = top250Movie;
