@@ -67,7 +67,11 @@ const scrapMovie = async (movieId) => {
         '#title-overview-widget > div.vital > div.slate_wrapper > div.slate > a'
       )
       .getAttribute('href');
-
+    const gallary = document
+      .querySelector(
+        '#title-overview-widget > div.vital > div.slate_wrapper > div.poster > a'
+      )
+      .getAttribute('href');
     return {
       title,
       genra,
@@ -81,6 +85,7 @@ const scrapMovie = async (movieId) => {
       releaseDate,
       shortStory,
       trailer: `https://www.imdb.com${trailer}`,
+      gallary: `https:/www.imdb.com${gallary}`,
     };
   });
 
