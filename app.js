@@ -1,8 +1,11 @@
 const express = require('express');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 // scrapers
 const scrapers = require('./src/server/scrapers/imdb');
 
+dotenv.config({ path: './config.env' });
 const app = express();
 
 const port = 3000 || process.env.PORT;
@@ -10,6 +13,16 @@ const port = 3000 || process.env.PORT;
 app.listen(port, () => {
   console.log(`http://localhost:${port}`);
 });
+
+// connect to the database
+const db = process.env.DATABASE_LOCAL;
+mongoose
+  .connect(db, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log('Database Connected !'));
 
 app.use(morgan('dev'));
 app.use(express.json());
