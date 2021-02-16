@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const mongoose = require('mongoose');
 
 const scrapMovie = async (movieId) => {
   const imdbUrl = `https://www.imdb.com/title/${movieId}/`;
@@ -445,4 +446,3 @@ module.exports.top250Tv = top250Tv;
 module.exports.trendingTv = trendingTv;
 module.exports.trendingMovie = trendingMovie;
 module.exports.popularTv = popularTv;
-scrapTv('tt3032476');
