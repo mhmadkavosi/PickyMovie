@@ -1,14 +1,15 @@
 const puppeteer = require('puppeteer');
-const mongoose = require('mongoose');
+const movieModel = require('../models/moviesModel');
 
 const scrapMovie = async (movieId) => {
   const imdbUrl = `https://www.imdb.com/title/${movieId}/`;
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
 
-  await page.goto(imdbUrl, { waitUntil: 'domcontentloaded' });
+  await page.goto(imdbUrl, { waitUntil: 'networkidle0' });
 
   const scrapedData = await page.evaluate(() => {
+    const imdbId = window.location.pathname.match(/title\/(.*)\//)[1];
     const title = document.querySelector('div[class="title_wrapper"] > h1')
       .innerText;
     const timeWatch = document
@@ -73,6 +74,7 @@ const scrapMovie = async (movieId) => {
       )
       .getAttribute('href');
     return {
+      imdbId,
       title,
       genra,
       poster,
@@ -88,9 +90,8 @@ const scrapMovie = async (movieId) => {
       imageGallary: `https:/www.imdb.com${imageGallary}`,
     };
   });
-
   await browser.close();
-  return scrapedData;
+  movieModel.create(scrapedData);
 };
 const scrapMovies = async (movieName) => {
   const browser = await puppeteer.launch();
