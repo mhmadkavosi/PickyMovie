@@ -3,7 +3,9 @@ const morgan = require('morgan');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 // scrapers
-const scrapers = require('./src/server/scrapers/imdb');
+const scrapers = require('./src/server/api/scrapers/imdb');
+
+const movieModel = require('./src/server/api/models/moviesModel');
 
 dotenv.config({ path: './config.env' });
 const app = express();
@@ -53,22 +55,10 @@ app.get('/:movieName', async (req, res) => {
 });
 
 app.get('/movie/:imdbId', async (req, res) => {
-  // const movie = new Promise((resolve, reject) => {
-  //   scrapers
-  //     .scrapMovie(req.params.imdbId)
-  //     .then((data) => {
-  //       resolve(data);
-  //     })
-  //     .catch((err) => console.log(err));
-  // });
-
-  // Promise.all([movie])
-  //   .then((data) => {
-  //     res.json(data);
-  //   })
-  //   .catch((err) => console.log(err));
   try {
     const movie = await scrapers.scrapMovie(req.params.imdbId);
+
+    movieModel.create(movie);
     res.json(movie);
   } catch (error) {
     console.log(error);
