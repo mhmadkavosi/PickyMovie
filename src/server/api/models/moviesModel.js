@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const moviesSchema = new mongoose.Schema(
   {
-    name: {
+    title: {
       type: String,
       required: [true, 'Movie must have a name '],
     },
@@ -22,6 +22,7 @@ const moviesSchema = new mongoose.Schema(
       type: [String],
       required: [true, 'Movie must have a writer'],
     },
+    stars: [String],
     rating: {
       type: String,
       required: [true, 'Movie must have a rating'],
@@ -30,7 +31,7 @@ const moviesSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Movie must have a rating count'],
     },
-    timeToWathc: String,
+    timeWatch: String,
     releaseDate: String,
     shortStory: String,
     trailer: String,
