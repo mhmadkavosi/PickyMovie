@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const moviesSchema = new mongoose.Schema(
   {
+    imdbId: {
+      type: String,
+      required: [true, 'imdb id is required'],
+    },
     title: {
       type: String,
       required: [true, 'Movie must have a name '],
