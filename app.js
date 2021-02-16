@@ -56,10 +56,17 @@ app.get('/:movieName', async (req, res) => {
 
 app.get('/movie/:imdbId', async (req, res) => {
   try {
-    const movie = await scrapers.scrapMovie(req.params.imdbId);
+    let { imdbId } = req.params;
 
-    movieModel.create(movie);
-    res.json(movie);
+    const movie = await movieModel.findOne({ imdbId });
+    if (!movie) {
+      await scrapers.scrapMovie(req.params.imdbId);
+      let movies = await movieModel.find({ imdbId });
+      console.log(movies);
+      res.status(200).json(movies);
+    } else {
+      res.status(200).json(movie);
+    }
   } catch (error) {
     console.log(error);
   }
